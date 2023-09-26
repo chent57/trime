@@ -1,6 +1,6 @@
 project(JNI)
 cmake_minimum_required (VERSION 3.6.0)
-
+set(CMAKE_CXX_STANDARD 14)
 # options
 option(BUILD_TEST "Build and run tests" OFF)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
@@ -144,7 +144,7 @@ else(BOOST_USE_SIGNALS2)
   file(GLOB BOOST_SIGNAL_SOURCES boost/libs/signals/src/*.cpp)
 endif()
 add_library(boost-static STATIC ${BOOST_SOURCES} ${BOOST_SIGNAL_SOURCES})
-target_compile_definitions(boost-static PRIVATE BOOST_LOCALE_WITH_ICONV)
+target_compile_definitions(boost-static PRIVATE BOOST_LOCALE_WITH_ICONV BOOST_FILESYSTEM_NO_CXX20_ATOMIC_REF)
 target_link_libraries(boost-static iconv-static)
 
 file(GLOB_RECURSE BOOST_HEADERS boost/libs/*.ipp boost/libs/*.h boost/libs/*.hpp)
