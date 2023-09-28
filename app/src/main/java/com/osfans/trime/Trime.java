@@ -18,6 +18,12 @@
 
 package com.osfans.trime;
 
+
+
+import static com.osfans.trime.enums.TrimeInputType.TYPE_ALIPAY_LOGIN_PWD;
+import static com.osfans.trime.enums.TrimeInputType.TYPE_ALIPAY_RESET_PWD;
+import static com.osfans.trime.enums.TrimeInputType.TYPE_TAX_PWD;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -46,6 +52,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+
+import com.google.gson.Gson;
 import com.osfans.trime.enums.InlineModeType;
 import com.osfans.trime.enums.WindowsPositionType;
 import java.util.Locale;
@@ -93,6 +101,7 @@ public class Trime extends InputMethodService
   private InlineModeType inlinePreedit; //嵌入模式
 
   private IntentReceiver mIntentReceiver;
+  private Gson gson = new Gson();
 
   private boolean isWinFixed() {
     return VERSION.SDK_INT < VERSION_CODES.LOLLIPOP
@@ -504,6 +513,7 @@ public class Trime extends InputMethodService
    */
   @Override
   public void onStartInput(EditorInfo attribute, boolean restarting) {
+    Log.info("ct-trime param:" + gson.toJson(attribute) + "restarting:" + restarting);
     super.onStartInput(attribute, restarting);
     canCompose = false;
     enterAsLineBreak = false;
@@ -540,8 +550,15 @@ public class Trime extends InputMethodService
         if (canCompose) break;
         return;
     }
+    if (inputType == TYPE_TAX_PWD
+            || inputType == TYPE_ALIPAY_LOGIN_PWD
+            || inputType == TYPE_ALIPAY_RESET_PWD) {
+      mTempAsciiMode = true;
+      keyboard = ".default";
+    }
     Rime.get();
     if (reset_ascii_mode) mAsciiMode = false;
+    Log.info("ct-trime param:" + "kb:" + keyboard);
     // Select a keyboard based on the input type of the editing field.
     mKeyboardSwitch.init(getMaxWidth()); //橫豎屏切換時重置鍵盤
     mKeyboardSwitch.setKeyboard(keyboard);
