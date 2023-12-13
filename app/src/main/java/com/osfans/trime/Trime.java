@@ -20,9 +20,8 @@ package com.osfans.trime;
 
 
 
-import static com.osfans.trime.enums.TrimeInputType.TYPE_ALIPAY_LOGIN_PWD;
-import static com.osfans.trime.enums.TrimeInputType.TYPE_ALIPAY_RESET_PWD;
-import static com.osfans.trime.enums.TrimeInputType.TYPE_TAX_PWD;
+import static com.osfans.trime.enums.TrimeInputType.PROP_KEY_PREFIX;
+import static com.osfans.trime.enums.TrimeInputType.TYPE_ENGLISH;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -56,7 +55,12 @@ import android.widget.PopupWindow;
 import com.google.gson.Gson;
 import com.osfans.trime.enums.InlineModeType;
 import com.osfans.trime.enums.WindowsPositionType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -550,11 +554,14 @@ public class Trime extends InputMethodService
         if (canCompose) break;
         return;
     }
-    if (inputType == TYPE_TAX_PWD
-            || inputType == TYPE_ALIPAY_LOGIN_PWD
-            || inputType == TYPE_ALIPAY_RESET_PWD) {
-      mTempAsciiMode = true;
-      keyboard = ".default";
+    String prop_key = PROP_KEY_PREFIX+attribute.packageName+TYPE_ENGLISH;
+    String pkgInputId = Utils.getSystemPropString(prop_key, "");
+    if (Objects.nonNull(pkgInputId)) {
+      List<String> inputIdList = new ArrayList<>(Arrays.asList(pkgInputId.split(",")));
+      if (inputIdList.contains(String.valueOf(inputType))) {
+        mTempAsciiMode = true;
+        keyboard = ".default";
+      }
     }
     Rime.get();
     if (reset_ascii_mode) mAsciiMode = false;
