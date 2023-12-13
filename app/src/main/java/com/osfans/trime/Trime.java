@@ -51,8 +51,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-
-import com.google.gson.Gson;
 import com.osfans.trime.enums.InlineModeType;
 import com.osfans.trime.enums.WindowsPositionType;
 
@@ -105,7 +103,6 @@ public class Trime extends InputMethodService
   private InlineModeType inlinePreedit; //嵌入模式
 
   private IntentReceiver mIntentReceiver;
-  private Gson gson = new Gson();
 
   private boolean isWinFixed() {
     return VERSION.SDK_INT < VERSION_CODES.LOLLIPOP
@@ -517,7 +514,6 @@ public class Trime extends InputMethodService
    */
   @Override
   public void onStartInput(EditorInfo attribute, boolean restarting) {
-    Log.info("ct-trime param:" + gson.toJson(attribute) + "restarting:" + restarting);
     super.onStartInput(attribute, restarting);
     canCompose = false;
     enterAsLineBreak = false;
@@ -565,7 +561,6 @@ public class Trime extends InputMethodService
     }
     Rime.get();
     if (reset_ascii_mode) mAsciiMode = false;
-    Log.info("ct-trime param:" + "kb:" + keyboard);
     // Select a keyboard based on the input type of the editing field.
     mKeyboardSwitch.init(getMaxWidth()); //橫豎屏切換時重置鍵盤
     mKeyboardSwitch.setKeyboard(keyboard);
